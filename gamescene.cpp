@@ -36,9 +36,10 @@ void GameScene::loop()
         matchFinding();
         movingAnimation();
         removeAnimation();
-        updateScore();
-        swapBackIfNotMatch();
+
+
         updateGrid();
+        swapBackIfNotMatch();
         draw();
         drawScore();
     }
@@ -259,18 +260,7 @@ void GameScene::removeAnimation()
 
 }
 
-void GameScene::updateScore()
-{
-    m_tmpScore = 0;
-    for (int i=1;i<=8;i++)
-    {
-        for (int j=1;j<=8;j++)
-        {
-            m_tmpScore += m_game.m_grid[i][j].match;
-        }
-    }
 
-}
 
 void GameScene::swapBackIfNotMatch()
 {
@@ -287,22 +277,26 @@ void GameScene::swapBackIfNotMatch()
 
 void GameScene::updateGrid()
 {
+    // 如果没有方块在移动
     if (!m_isMoving)
     {
-        for(int i=8;i>0;i--)
+        int removedPieces = 0; // 统计被消除的方块数量
+
+        // 遍历游戏网格中的每个方块
+        for (int i = 8; i > 0; i--)
         {
-            for(int j=1;j<=8;j++)
+            for (int j = 1; j <= 8; j++)
             {
+                // 如果方块匹配
                 if (m_game.m_grid[i][j].match)
                 {
-                    for(int n=i;n>0;n--)
+                    // 查找上方未匹配的方块
+                    for (int n = i; n > 0; n--)
                     {
                         if (!m_game.m_grid[n][j].match)
                         {
+                            // 交换匹配的方块和未匹配的方块
                             m_game.swap(m_game.m_grid[n][j], m_game.m_grid[i][j]);
-
-                            m_game.m_score++;
-
                             break;
                         }
                     }
@@ -310,23 +304,37 @@ void GameScene::updateGrid()
             }
         }
 
-
-        for(int j=1;j<=8;j++)
+        // 遍历游戏网格中的每个方块
+        for (int j = 1; j <= 8; j++)
         {
-            for(int i=8,n=0;i>0;i--)
+            for (int i = 8, n = 0; i > 0; i--)
             {
+                // 如果方块匹配
                 if (m_game.m_grid[i][j].match)
                 {
-                    m_game.m_grid[i][j].kind = rand()%7;
-                    m_game.m_grid[i][j].y = -Game::TILE_SIZE*n++;
-                    m_game.m_grid[i][j].match=0;
+                    // 随机生成新的方块类型
+                    m_game.m_grid[i][j].kind = rand() % 7;
+
+                    // 设置方块的垂直位置
+                    m_game.m_grid[i][j].y = -Game::TILE_SIZE * n++;
+
+                    // 重置方块的匹配标志和透明度
+                    m_game.m_grid[i][j].match = 0;
                     m_game.m_grid[i][j].alpha = 255;
+
+                    removedPieces++; // 统计被消除的方块数量
                 }
             }
         }
 
+        // 增加分数，匹配消除几个方块就加几分
+        m_game.m_score += removedPieces;
+        if(removedPieces > 0){
+            m_tmpScore = 1;
+        }else m_tmpScore =0;
     }
 }
+
 
 void GameScene::removePixmapItems()
 {
@@ -395,17 +403,136 @@ void GameScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
         m_pos = QPoint(event->scenePos().x(), event->scenePos().y()) - Game::OFFSET;
     }
+    else if(event->button() == Qt::RightButton)
+    {
+        m_pos1 = QPoint(event->scenePos().x(), event->scenePos().y()) - Game::OFFSET;
+    }
 }
 
 void GameScene::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-        case Qt::Key_Z:
-    {
+    case Qt::Key_Z:{
         //renderScene();
-    }
         break;
+    }
+    case Qt::Key_H:{
+        suggestSwap();
+        break;
+    }
+    case Qt::Key_B:{
+        boom();
+        break;
+    }
+    break;
     }
 
     QGraphicsScene::keyPressEvent(event);
 }
+
+
+// 深度优先
+// DFS
+bool GameScene::dfs(int x, int y, bool visited[9][9])
+{
+    // 检查当前坐标是否已经被访问
+    if (visited[y][x]) return false;
+    visited[y][x] = true;
+
+    int kind = m_game.m_grid[y][x].kind;
+
+    // 水平
+    if (x > 1 && x < 8 && kind == m_game.m_grid[y][x-1].kind && kind == m_game.m_grid[y][x+1].kind)
+    {
+        return true;
+    }
+
+    // 垂直
+    if (y > 1 && y < 8 && kind == m_game.m_grid[y-1][x].kind && kind == m_game.m_grid[y+1][x].kind)
+    {
+        return true;
+    }
+
+    // 递归检查周围相邻的宝石
+    if (x < 8 && dfs(x + 1, y, visited)) return true;
+    if (y < 8 && dfs(x, y + 1, visited)) return true;
+    if (x > 1 && dfs(x - 1, y, visited)) return true;
+    if (y > 1 && dfs(x, y - 1, visited)) return true;
+
+    return false;
+}
+
+// 检查三连
+bool GameScene::checkMatchAfterSwap(int x1, int y1, int x2, int y2)
+{
+    // 交换宝石
+    std::swap(m_game.m_grid[y1][x1].kind, m_game.m_grid[y2][x2].kind);
+
+    bool visited[9][9] = {{false}}; // 用于记录访问的宝石位置
+    bool matchFound = false;
+
+    if (dfs(x1, y1, visited) || dfs(x2, y2, visited)) {
+        matchFound = true;
+    }
+
+    // 恢复交换
+    std::swap(m_game.m_grid[y1][x1].kind, m_game.m_grid[y2][x2].kind);
+
+    if (matchFound == true){
+        std::swap(m_game.m_grid[y1][x1].kind, m_game.m_grid[y2][x2].kind);
+    }
+
+    return matchFound;
+}
+
+// 穷举法
+bool GameScene::suggestSwap()
+{
+    // 遍历
+    for (int i = 1; i <= 8; ++i)
+    {
+        for (int j = 1; j <= 8; ++j)
+        {
+            // 检查右边和下边的宝石
+            if (i < 8 && checkMatchAfterSwap(i, j, i + 1, j))
+            {
+                m_game.m_score -=3;
+                return true;
+            }
+            if (j < 8 && checkMatchAfterSwap(i, j, i, j + 1))
+            {
+                m_game.m_score -=3;
+                return true;
+            }
+        }
+    }
+    return false;  // 没有找到可以交换的宝石对
+}
+
+
+
+void GameScene::boom() {
+    m_click = 0;
+    m_x0 = m_pos1.x() / Game::TILE_SIZE + 1;  // 计算点击的行坐标
+    m_y0 = m_pos1.y() / Game::TILE_SIZE + 1;  // 计算点击的列坐标
+
+    // 获取当前点击位置的宝石类型
+    int kind = m_game.m_grid[m_y0][m_x0].kind;
+
+    // 遍历周围方向
+    for (int dx = -1; dx <= 1; ++dx) {
+        for (int dy = -1; dy <= 1; ++dy) {
+            if (dx == 0 && dy == 0) continue;
+
+            int x = m_x0 + dx;
+            int y = m_y0 + dy;
+
+            // 检查越界
+            if (x >= 1 && x <= 8 && y >= 1 && y <= 8) {
+                m_game.m_grid[y][x].kind = kind;
+            }
+        }
+    }
+    m_game.m_score -= 10;
+}
+

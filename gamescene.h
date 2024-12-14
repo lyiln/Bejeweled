@@ -31,6 +31,14 @@ private:
     void removePixmapItems();
     void drawScore();
     void renderScene();
+
+    bool dfs(int x, int y, bool visited[9][9]);
+    bool checkMatchAfterSwap(int x1, int y1, int x2, int y2);
+    bool suggestSwap();
+
+
+    void boom();
+
     Game m_game;
     QPixmap m_BgPixmap;
     QPixmap m_GemsPixmap;
@@ -40,7 +48,7 @@ private:
 
     int m_x0, m_y0, m_x, m_y;
     int m_click;
-    QPoint m_pos;
+    QPoint m_pos, m_pos1;
     bool m_isSwap, m_isMoving;
     QGraphicsPixmapItem m_pixmapItems[10][10];
     QGraphicsPixmapItem unityPartScoreItem, decimalPartScoreItem, hundredthPartScoreItem;
