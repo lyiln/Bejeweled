@@ -1,18 +1,22 @@
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+QT += sql
 CONFIG += c++11
 
 HEADERS += \
     game.h \
     gamescene.h \
     menutowindow.h \
+    startscene.h \
     view.h
 
 SOURCES += \
+    database.cpp \
     game.cpp \
     gamescene.cpp \
     main.cpp \
     menutowindow.cpp \
+    startscene.cpp \
     view.cpp
 
 RESOURCES += \
