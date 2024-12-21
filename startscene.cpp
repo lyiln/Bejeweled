@@ -57,7 +57,6 @@ startscene::startscene(QWidget* parent):QWidget(parent) {
     buttonLayout->addWidget(registerButton);
     buttonLayout->addItem(horizontalSpacer);
 
-    // 将按钮布局添加到主布局
     mainLayout->addLayout(buttonLayout);
 
     // 连接信号和槽
@@ -71,7 +70,7 @@ void startscene::login() {
     QString username = usernameLineEdit->text();
     QString password = passwordLineEdit->text();
 
-    // 登录逻辑：验证用户信息
+    // 登录
     QSqlQuery query;
     query.prepare("SELECT * FROM users WHERE username = ? AND password = ?");
     query.addBindValue(username);
@@ -110,7 +109,7 @@ void startscene::registerAcc() {
         // 用户名已存在，注册失败
         QMessageBox::critical(this, "注册失败", "用户名已存在，注册失败！");
     } else {
-        // 用户名不存在，执行插入操作
+        // 用户名不存在
         query.prepare("INSERT INTO users (username, password, score) VALUES (?, ?, ?)");
         query.addBindValue(username);
         query.addBindValue(password);
@@ -127,7 +126,7 @@ void startscene::registerAcc() {
 // 创建数据库
 void startscene::createDatabase() {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("player_data.db");  // 使用当前目录中的 player_data.db
+    db.setDatabaseName("player_data.db");
 
     if (!db.open()) {
         qDebug() << "Error: failed to connect to database!";
@@ -156,3 +155,59 @@ void startscene::connectToDatabase() {
         QMessageBox::critical(this, "Error", "Failed to open database.");
     }
 }
+
+int startscene::getScore(const QString &name){
+    QSqlQuery query;
+    query.prepare("SELECT score FROM users WHERE username = ?");
+    query.addBindValue(name);
+
+    if (query.exec() && query.next()) {
+        return query.value(0).toInt(); // 返回分数
+    } else {
+        qDebug() << "Error: Unable to fetch score for user " << name;
+        return -1;  // 如果出错返回 -1
+    }
+}
+
+// 注意这里没有比较数据库与输入分数大小，自行比对
+void startscene::updateScore(const QString &name, int score){
+    // 更新用户的分数
+    QSqlQuery query;
+    query.prepare("UPDATE users SET score = ? WHERE username = ?");
+    query.addBindValue(score);
+    query.addBindValue(name);
+
+    if (query.exec()) {
+        qDebug() << "update success: " << name;
+    } else {
+        qDebug() << "Error: update failed" << name;
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

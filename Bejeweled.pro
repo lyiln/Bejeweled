@@ -12,7 +12,6 @@ HEADERS += \
     view.h
 
 SOURCES += \
-    database.cpp \
     game.cpp \
     gamescene.cpp \
     main.cpp \
