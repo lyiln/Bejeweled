@@ -19,6 +19,20 @@ startscene::startscene(QWidget* parent):QWidget(parent) {
     QString backgroundImagePath = ":/images/loginBackground.png";  // 替换为你的背景图片路径
     setBackgroundImage(backgroundImagePath);
 
+    // 创建用户和密码图片标签
+    userIconLabel = new QLabel(this);
+    passwordIconLabel = new QLabel(this);
+
+    // 加载图片并设置到标签
+    QPixmap userPixmap(":/images/account.png"); // 替换为实际的用户图片路径
+    QPixmap passwordPixmap(":/images/password.png"); // 替换为实际的密码图片路径
+    userIconLabel->setPixmap(userPixmap);
+    passwordIconLabel->setPixmap(passwordPixmap);
+
+    // 设置图片标签为透明背景，这样不会遮挡背景图片
+    userIconLabel->setAttribute(Qt::WA_TranslucentBackground);
+    passwordIconLabel->setAttribute(Qt::WA_TranslucentBackground);
+
     // 创建输入框
     usernameLineEdit = new QLineEdit(this);
     passwordLineEdit = new QLineEdit(this);
@@ -39,6 +53,21 @@ startscene::startscene(QWidget* parent):QWidget(parent) {
 
     // 创建布局
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+
+    // 设置图片标签的位置（您需要根据实际布局调整这些值）
+    int iconLeftMargin = 100; // 从左边框的偏移量
+    int iconTopMargin = 220; // 从顶边框的偏移量
+
+
+    // 设置用户图片标签的位置
+    userIconLabel->move(iconLeftMargin, 100);
+
+    // 设置密码图片标签的位置
+    passwordIconLabel->move(iconLeftMargin,220);
+
+    // 显示图片标签
+    userIconLabel->show();
+    passwordIconLabel->show();
 
     // 创建水平间距，使输入框和按钮居中
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);

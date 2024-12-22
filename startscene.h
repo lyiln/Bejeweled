@@ -6,6 +6,7 @@
 #include <QLineEdit>
 #include <QCoreApplication>
 #include <QtSql>
+#include <QLabel>
 
 
 class startscene: public QWidget{
@@ -28,6 +29,9 @@ private:
     void connectToDatabase();
     QLineEdit *usernameLineEdit;
     QLineEdit *passwordLineEdit;
+    // 在类成员变量中声明 QLabel
+    QLabel *userIconLabel;
+    QLabel *passwordIconLabel;
 };
 
 #endif // STARTSCENE_H
