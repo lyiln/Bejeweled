@@ -26,25 +26,31 @@ MenuWindow::MenuWindow(QWidget *parent)
     connect(m_startButton, &QPushButton::clicked, this, &MenuWindow::onStartGameClicked);
 
 
-    //限时模式
-    QPushButton *timeButton = new QPushButton(this);
-    timeButton->setGeometry(280, 190, 149, 61);
-    QPixmap t_pixmap(":/images/xianShiModel1.png");
-    timeButton->setIcon(t_pixmap);
-    timeButton->setIconSize(t_pixmap.size());
+    //限时模式一
+    QPushButton *timeButton1 = new QPushButton(this);
+    timeButton1->setGeometry(280, 190, 149, 61);
+    QPixmap t_pixmap1(":/images/xianShiModel1.png");
+    timeButton1->setIcon(t_pixmap1);
+    timeButton1->setIconSize(t_pixmap1.size());
 
 
 
-    // 创建选项按钮并设置位置和大小
-    QPushButton *optionsButton = new QPushButton("选项", this);
-    optionsButton->setGeometry(280, 260, 149, 57);
+    //限时模式二
+    QPushButton *timeButton2 = new QPushButton(this);
+    timeButton2->setGeometry(280, 260, 149, 57);
+    QPixmap t_pixmap2(":/images/xianShiModel2.png");
+    timeButton2->setIcon(t_pixmap2);
+    timeButton2->setIconSize(t_pixmap2.size());
 
     // 创建退出按钮并设置位置和大小
-    QPushButton *exitButton = new QPushButton("退出", this);
+    QPushButton *exitButton = new QPushButton(this);
     exitButton->setGeometry(280, 330, 149, 57);
+    QPixmap e_pixmap(":/images/exit.png");
+    exitButton->setIcon(e_pixmap);
+    exitButton->setIconSize(e_pixmap.size());
 
     // 连接选项按钮的点击信号到相应的槽函数
-    connect(optionsButton, &QPushButton::clicked, this, &MenuWindow::onOptionsClicked);
+    connect(timeButton2, &QPushButton::clicked, this, &MenuWindow::onOptionsClicked);
 
     // 连接退出按钮的点击信号到相应的槽函数
     connect(exitButton, &QPushButton::clicked, this, &MenuWindow::onExitClicked);
