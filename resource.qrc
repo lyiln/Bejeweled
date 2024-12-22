@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/cursor.png</file>
+        <file>images/gems.png</file>
+        <file>images/background.png</file>
+        <file>images/frame.png</file>
+        <file>images/score.png</file>
+        <file>images/numbers.png</file>
+        <file>images/puTongModel.png</file>
+        <file>images/xianShiModel.png</file>
+        <file>images/cheHui.png</file>
+        <file>images/Hint.png</file>
+        <file>images/04.png</file>
+        <file>images/loginBackground.png</file>
+    </qresource>
+</RCC>
