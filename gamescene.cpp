@@ -6,10 +6,13 @@
 #include <QPainter>
 #include <QDir>
 #include <QDebug>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QPushButton>
 
 GameScene::GameScene(QObject *parent)
     : QGraphicsScene{parent}, m_game(), m_click(0), m_isSwap(false), m_isMoving(false), m_tmpScore(0)
-    , m_deltaTime(0.f), m_animationTime(0.f), m_animationSpeed(20.f), m_timeLeft(60) // 初始化倒计时为60秒
+    , m_deltaTime(0.f), m_animationTime(0.f), m_animationSpeed(20.f), m_timeLeft(0) // 初始化倒计时为60秒
 {
     // 连接倒计时计时器
     connect(&m_timerTime, &QTimer::timeout, this, &GameScene::updateTimer);
@@ -28,10 +31,9 @@ GameScene::GameScene(QObject *parent)
 
 void GameScene::loop()
 {
-    if (m_timeLeft <= 0) {
-        // 游戏已结束，不再进行游戏循环
-        return;
-    }
+
+
+
     m_deltaTime = m_elapsedTimer.elapsed();
     m_elapsedTimer.restart();
 
@@ -139,6 +141,17 @@ void GameScene::init()
 
 }
 
+void GameScene::setMenuWindow(QWidget *menuWindow)
+{
+    m_menuWindow = menuWindow;
+}
+
+void GameScene::setTimeLeft(int timeLeft)
+{
+    m_timeLeft = timeLeft;
+    m_timerTime.start(1000); // 每秒触发一次
+}
+
 void GameScene::updateTimer()
 {
     if (m_timeLeft > 0) {
@@ -146,16 +159,41 @@ void GameScene::updateTimer()
         m_timerText->setPlainText(QString::number(m_timeLeft) + "s");
     } else {
         m_timerTime.stop();
-        // 显示游戏结束信息
-        QGraphicsTextItem *gameOverText = new QGraphicsTextItem();
-        gameOverText->setPos(Game::RESOLUTION.width()/2 - 100, Game::RESOLUTION.height()/2 - 50);
-        gameOverText->setDefaultTextColor(Qt::red);
-        gameOverText->setFont(QFont("Arial", 48));
-        gameOverText->setPlainText("Game Over!");
-        addItem(gameOverText);
+        m_timerTime.start(1000); // 每秒触发一次
+        //m_timer.stop(); // 停止游戏循环
 
-        // 停止游戏循环
-        m_timer.stop();
+        // 创建一个新的界面显示分数和最高分
+        QWidget *scoreWindow = new QWidget();
+        scoreWindow->setWindowTitle("Game Over");
+        scoreWindow->resize(300, 200);
+
+        QVBoxLayout *layout = new QVBoxLayout(scoreWindow);
+
+        // 显示分数
+        QLabel *scoreLabel = new QLabel(QString("Score: %1").arg(m_tmpScore), scoreWindow);
+        scoreLabel->setFont(QFont("Arial", 16));
+        layout->addWidget(scoreLabel);
+
+        // 显示最高分
+        //QLabel *highScoreLabel = new QLabel(QString("High Score: %1").arg(getHighScore()), scoreWindow);
+        QLabel *highScoreLabel = new QLabel(QString("High Score: %1").arg(m_tmpScore), scoreWindow);
+        highScoreLabel->setFont(QFont("Arial", 16));
+        layout->addWidget(highScoreLabel);
+
+        // 创建退出按钮
+        QPushButton *exitButton = new QPushButton("Exit", scoreWindow);
+        layout->addWidget(exitButton);
+
+        // 连接退出按钮的点击信号到槽函数
+        connect(exitButton, &QPushButton::clicked, this, [this, scoreWindow]() {
+            scoreWindow->close();
+            // 返回到菜单界面
+            if (m_menuWindow) {
+                m_menuWindow->show();
+            }
+        });
+
+        scoreWindow->show();
     }
 }
 
@@ -168,15 +206,15 @@ void GameScene::draw()
         {
             Piece p = m_game.m_grid[i][j];
             QImage image = m_GemsPixmap.copy(p.kind*49, 0, 49, 49).toImage().convertToFormat(QImage::Format_ARGB32);
-//            for (int x(0); x != image.width(); ++x)
-//            {
-//                for (int y(0); y != image.height(); ++y)
-//                {
-//                    QColor color(image.pixel(x,y));
-//                    color.setAlpha(p.alpha);
-//                    image.setPixel(x, y, color.rgba());
-//                }
-//            }
+            //            for (int x(0); x != image.width(); ++x)
+            //            {
+            //                for (int y(0); y != image.height(); ++y)
+            //                {
+            //                    QColor color(image.pixel(x,y));
+            //                    color.setAlpha(p.alpha);
+            //                    image.setPixel(x, y, color.rgba());
+            //                }
+            //            }
             m_pixmapItems[i][j].setPixmap(QPixmap::fromImage(image));
             m_pixmapItems[i][j].setPos(p.x, p.y);
             m_pixmapItems[i][j].moveBy(Game::OFFSET.x() - Game::TILE_SIZE, Game::OFFSET.y() - Game::TILE_SIZE);

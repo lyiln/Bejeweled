@@ -1,9 +1,13 @@
 #include "menutowindow.h"
 #include <QPixmap>
+#include "gamescene.h"
 
 MenuWindow::MenuWindow(QWidget *parent)
     : QWidget(parent), m_gameWindow(nullptr)
 {
+
+    GameScene *gameScene = new GameScene();
+    gameScene->setMenuWindow(this); // 将菜单界面的指针传递给 GameScene
 
     QPalette palette;
     palette.setBrush(this->backgroundRole(), QBrush(QPixmap(":/images/04.png")));
@@ -50,7 +54,7 @@ MenuWindow::MenuWindow(QWidget *parent)
     exitButton->setIconSize(e_pixmap.size());
 
     // 连接选项按钮的点击信号到相应的槽函数
-    connect(timeButton2, &QPushButton::clicked, this, &MenuWindow::onOptionsClicked);
+    connect(timeButton2, &QPushButton::clicked, this, &MenuWindow::time_2_Clicked);
 
     // 连接退出按钮的点击信号到相应的槽函数
     connect(exitButton, &QPushButton::clicked, this, &MenuWindow::onExitClicked);
@@ -68,13 +72,30 @@ void MenuWindow::onStartGameClicked()
     if (m_gameWindow) {
         this->hide();
         //增加时间设置
+        // 获取 GameScene 对象
+        GameScene *gameScene = qobject_cast<GameScene*>(m_gameWindow);
+        if (gameScene) {
+            // 设置倒计时时间（例如 60 秒）
+            gameScene->setTimeLeft(9999);
+        }
 
         m_gameWindow->show();
     }
 }
-void MenuWindow::onOptionsClicked()
+void MenuWindow::time_2_Clicked()
 {
-    // 处理选项按钮点击事件
+    if (m_gameWindow) {
+        this->hide();
+        //增加时间设置
+        // 获取 GameScene 对象
+        GameScene *gameScene = qobject_cast<GameScene*>(m_gameWindow);
+        if (gameScene) {
+            // 设置倒计时时间（例如 60 秒）
+            gameScene->setTimeLeft(60);
+        }
+
+        m_gameWindow->show();
+    }
 }
 
 void MenuWindow::onExitClicked()

@@ -15,12 +15,19 @@ public:
     explicit GameScene(QObject *parent = nullptr);
     int m_tmpScore;
     Game m_game;
+    void setMenuWindow(QWidget *menuWindow);
+    void setTimeLeft(int timeLeft);
+
 
 signals:
 private slots:
     void loop();
     void updateTimer();
 private:
+
+    QWidget *m_menuWindow;
+
+
     int m_timeLeft; // 倒计时剩余时间（秒）
     QTimer m_timerTime; // 倒计时计时器
     QGraphicsTextItem *m_timerText; // 倒计时文本显示

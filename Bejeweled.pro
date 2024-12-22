@@ -5,6 +5,7 @@ QT += sql
 CONFIG += c++11
 
 HEADERS += \
+    endwindow.h \
     game.h \
     gamescene.h \
     menutowindow.h \
@@ -12,6 +13,7 @@ HEADERS += \
     view.h
 
 SOURCES += \
+    endwindow.cpp \
     game.cpp \
     gamescene.cpp \
     main.cpp \
