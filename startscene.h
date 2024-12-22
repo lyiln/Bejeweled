@@ -21,6 +21,7 @@ public slots:
     void registerAcc();
     int getScore(const QString &name);
     void updateScore(const QString &name, int score);
+    void setBackgroundImage(const QString &imagePath);
 
 private:
     void createDatabase();

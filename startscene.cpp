@@ -6,12 +6,18 @@
 #include <QtSql>
 #include <QMessageBox>
 #include <QDebug>
+#include <QPalette>  // 添加 QPalette 头文件
+#include <QPixmap>   // 添加 QPixmap 头文件
 
 startscene::startscene(QWidget* parent):QWidget(parent) {
     createDatabase();  // 创建数据库并连接
     connectToDatabase();
 
     setFixedSize(740, 480);
+
+    // 设置背景图片
+    QString backgroundImagePath = ":/images/loginBackground.png";  // 替换为你的背景图片路径
+    setBackgroundImage(backgroundImagePath);
 
     // 创建输入框
     usernameLineEdit = new QLineEdit(this);
@@ -182,28 +188,24 @@ void startscene::updateScore(const QString &name, int score){
     } else {
         qDebug() << "Error: update failed" << name;
     }
-
-
 }
 
+// 设置背景图片
+void startscene::setBackgroundImage(const QString &imagePath) {
+    QPixmap backgroundImage(imagePath);
+    if (backgroundImage.isNull()) {
+        qDebug() << "Error: Failed to load background image!";
+        return;
+    }
 
+    // 调整图片大小以适应窗口
+    backgroundImage = backgroundImage.scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // 设置背景图片
+    QPalette palette;
+    palette.setBrush(QPalette::Window, backgroundImage);
+    this->setPalette(palette);
+}
 
 
 
