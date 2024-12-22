@@ -21,3 +21,11 @@ SOURCES += \
 
 RESOURCES += \
     resource.qrc
+
+DISTFILES += \
+    images/account.png \
+    images/loginBackground.png \
+    images/password.png \
+    images/xianShiModel1.png \
+    images/xianShiModel2.png \
+    images/退出.png

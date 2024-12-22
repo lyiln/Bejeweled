@@ -29,7 +29,7 @@ MenuWindow::MenuWindow(QWidget *parent)
     //限时模式
     QPushButton *timeButton = new QPushButton(this);
     timeButton->setGeometry(280, 190, 149, 61);
-    QPixmap t_pixmap(":/images/xianShiModel.png");
+    QPixmap t_pixmap(":/images/xianShiModel1.png");
     timeButton->setIcon(t_pixmap);
     timeButton->setIconSize(t_pixmap.size());
 
