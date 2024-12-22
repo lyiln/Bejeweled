@@ -17,5 +17,6 @@
         <file>images/xianShiModel1.png</file>
         <file>images/xianShiModel2.png</file>
         <file>images/exit.png</file>
+        <file>music/musicone.mp3</file>
     </qresource>
 </RCC>

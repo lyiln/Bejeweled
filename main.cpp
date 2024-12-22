@@ -30,13 +30,13 @@ int main(int argc, char** argv)
     // 设置音量（可以根据需要调整）
     audioOutput->setVolume(1);
 
-    QFile file("D:/repo/learn-git/Bejeweled/musicone.mp3");
+    QFile file("E:/TEST/ShiXun/Bejeweled-mainZbf/music/musicone.mp3");
     if (!file.exists()) {
         qDebug() << "File does not exist!";
     }
 
     // 设置音乐文件路径（替换为你自己的音乐文件路径）
-    musicPlayer->setSource(QUrl::fromLocalFile("D:/repo/learn-git/Bejeweled/musicone.mp3"));
+    musicPlayer->setSource(QUrl::fromLocalFile("E:/TEST/ShiXun/Bejeweled-mainZbf/music/musicone.mp3"));
 
     // 连接播放结束信号到重新播放的槽
     QObject::connect(musicPlayer, &QMediaPlayer::mediaStatusChanged, [&]() {
