@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <view.h>
+#include <QApplication>
 class GameScene;
 class View;
 class MenuWindow : public QWidget

@@ -12,7 +12,7 @@
 
 GameScene::GameScene(QObject *parent)
     : QGraphicsScene{parent}, m_game(), m_click(0), m_isSwap(false), m_isMoving(false), m_tmpScore(0)
-    , m_deltaTime(0.f), m_animationTime(0.f), m_animationSpeed(20.f), m_timeLeft(20) // 初始化倒计时为60秒
+    , m_deltaTime(0.f), m_animationTime(0.f), m_animationSpeed(20.f), m_timeLeft(9999) // 初始化倒计时为60秒
 {
     // 连接倒计时计时器
     connect(&m_timerTime, &QTimer::timeout, this, &GameScene::updateTimer);

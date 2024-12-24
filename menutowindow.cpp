@@ -121,4 +121,6 @@ void MenuWindow::onExitClicked()
 {
     // 处理退出按钮点击事件
     // 退出应用程序
+    QApplication::quit();
+
 }
