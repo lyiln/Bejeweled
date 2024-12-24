@@ -46,8 +46,8 @@ void GameScene::loop()
         matchFinding();
         movingAnimation();
         removeAnimation();
-        swapBackIfNotMatch();
         updateGrid();
+        swapBackIfNotMatch();
         draw();
         drawScore();
     }
@@ -168,8 +168,8 @@ void GameScene::updateTimer()
         m_timerText->setPlainText(QString::number(m_timeLeft) + "s");
     } else {
         m_timerTime.stop();
-        m_timerTime.start(1000); // 每秒触发一次
-        m_timer.stop(); // 停止游戏循环
+        // m_timerTime.start(1000); // 每秒触发一次
+        //m_timer.stop(); // 停止游戏循环
 
         // 创建一个新的界面显示分数和最高分
         QWidget *scoreWindow = new QWidget();

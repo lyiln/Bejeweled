@@ -102,7 +102,7 @@ void MenuWindow::time_1_Clicked()
 {
     if (m_gameWindow) {
         this->hide();
-        callRefreshTimer(60); // 假设传入60秒
+        callRefreshTimer(10); // 假设传入60秒
         m_gameWindow->show();
     }
 }
@@ -112,7 +112,7 @@ void MenuWindow::time_2_Clicked()
 {
     if (m_gameWindow) {
         this->hide();
-        callRefreshTimer(30); // 假设传入30秒
+        callRefreshTimer(10); // 假设传入30秒
         m_gameWindow->show();
     }
 }
