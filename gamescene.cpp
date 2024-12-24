@@ -12,7 +12,7 @@
 
 GameScene::GameScene(QObject *parent)
     : QGraphicsScene{parent}, m_game(), m_click(0), m_isSwap(false), m_isMoving(false), m_tmpScore(0)
-    , m_deltaTime(0.f), m_animationTime(0.f), m_animationSpeed(20.f), m_timeLeft(0) // 初始化倒计时为60秒
+    , m_deltaTime(0.f), m_animationTime(0.f), m_animationSpeed(20.f), m_timeLeft(20) // 初始化倒计时为60秒
 {
     // 连接倒计时计时器
     connect(&m_timerTime, &QTimer::timeout, this, &GameScene::updateTimer);
@@ -148,8 +148,17 @@ void GameScene::setMenuWindow(QWidget *menuWindow)
 
 void GameScene::setTimeLeft(int timeLeft)
 {
-    m_timeLeft = timeLeft;
-    m_timerTime.start(1000); // 每秒触发一次
+    // 停止当前计时器
+    m_timerTime.stop();
+
+    // 更新倒计时时间
+    m_timeLeft = 30;
+
+    // 重新启动计时器，每秒触发一次
+    m_timerTime.start(1000);
+
+    // 更新倒计时文本显示
+    m_timerText->setPlainText(QString::number(m_timeLeft) + "s");
 }
 
 void GameScene::updateTimer()
@@ -160,7 +169,7 @@ void GameScene::updateTimer()
     } else {
         m_timerTime.stop();
         m_timerTime.start(1000); // 每秒触发一次
-        //m_timer.stop(); // 停止游戏循环
+        m_timer.stop(); // 停止游戏循环
 
         // 创建一个新的界面显示分数和最高分
         QWidget *scoreWindow = new QWidget();

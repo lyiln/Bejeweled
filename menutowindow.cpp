@@ -10,7 +10,7 @@ MenuWindow::MenuWindow(QWidget *parent)
     gameScene->setMenuWindow(this); // 将菜单界面的指针传递给 GameScene
 
     QPalette palette;
-    palette.setBrush(this->backgroundRole(), QBrush(QPixmap(":/images/04.png")));
+    palette.setBrush(this->backgroundRole(), QBrush(QPixmap(":/images/background.png")));
     this->setPalette(palette);
 
     //设置窗口大小
