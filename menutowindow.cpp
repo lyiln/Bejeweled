@@ -54,6 +54,9 @@ MenuWindow::MenuWindow(QWidget *parent)
     exitButton->setIconSize(e_pixmap.size());
 
     // 连接选项按钮的点击信号到相应的槽函数
+    connect(timeButton1, &QPushButton::clicked, this, &MenuWindow::time_1_Clicked);
+
+    // 连接选项按钮的点击信号到相应的槽函数
     connect(timeButton2, &QPushButton::clicked, this, &MenuWindow::time_2_Clicked);
 
     // 连接退出按钮的点击信号到相应的槽函数
@@ -94,11 +97,22 @@ void MenuWindow::onStartGameClicked()
         m_gameWindow->show();
     }
 }
-void MenuWindow::time_2_Clicked()
+
+void MenuWindow::time_1_Clicked()
 {
     if (m_gameWindow) {
         this->hide();
         callRefreshTimer(60); // 假设传入60秒
+        m_gameWindow->show();
+    }
+}
+
+
+void MenuWindow::time_2_Clicked()
+{
+    if (m_gameWindow) {
+        this->hide();
+        callRefreshTimer(30); // 假设传入30秒
         m_gameWindow->show();
     }
 }

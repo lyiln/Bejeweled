@@ -17,6 +17,7 @@ public:
 private slots:
     void onStartGameClicked();
     void onExitClicked();
+    void time_1_Clicked();
     void time_2_Clicked();
 private:
     QPushButton *m_startButton;
