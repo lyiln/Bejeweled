@@ -9,10 +9,11 @@ class View : public QGraphicsView
     Q_OBJECT
 public:
     explicit View();
+    GameScene *m_gameScene;
 
 signals:
 private:
-    GameScene *m_gameScene;
+
 
     // QWidget interface
 protected:

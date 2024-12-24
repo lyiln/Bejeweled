@@ -17,6 +17,7 @@ public:
     Game m_game;
     void setMenuWindow(QWidget *menuWindow);
     void setTimeLeft(int timeLeft);
+    void refreshTimer(int newTime);
 
 
 signals:

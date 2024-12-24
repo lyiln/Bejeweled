@@ -62,6 +62,25 @@ MenuWindow::MenuWindow(QWidget *parent)
 
 }
 
+GameScene* MenuWindow::getGameScene()
+{
+    View* view = qobject_cast<View*>(m_gameWindow);
+    if(view)
+    {
+        return view->m_gameScene;
+    }
+    return nullptr;
+}
+
+void MenuWindow::callRefreshTimer(int customTime)
+{
+    GameScene *gameScene = getGameScene();
+    if(gameScene)
+    {
+        gameScene->refreshTimer(customTime);
+    }
+}
+
 void MenuWindow::setGameWindow(QWidget *gameWindow)
 {
     m_gameWindow = gameWindow;
@@ -71,14 +90,7 @@ void MenuWindow::onStartGameClicked()
 {
     if (m_gameWindow) {
         this->hide();
-        //增加时间设置
-        // 获取 GameScene 对象
-        GameScene *gameScene = qobject_cast<GameScene*>(m_gameWindow);
-        if (gameScene) {
-            // 设置倒计时时间（例如 60 秒）
-            gameScene->setTimeLeft(9999);
-        }
-
+        callRefreshTimer(9999); // 假设传入9999秒
         m_gameWindow->show();
     }
 }
@@ -86,14 +98,7 @@ void MenuWindow::time_2_Clicked()
 {
     if (m_gameWindow) {
         this->hide();
-        //增加时间设置
-        // 获取 GameScene 对象
-        GameScene *gameScene = qobject_cast<GameScene*>(m_gameWindow);
-        if (gameScene) {
-            // 设置倒计时时间（例如 60 秒）
-            gameScene->setTimeLeft(60);
-        }
-
+        callRefreshTimer(60); // 假设传入60秒
         m_gameWindow->show();
     }
 }

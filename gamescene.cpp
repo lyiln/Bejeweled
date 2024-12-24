@@ -618,3 +618,10 @@ void GameScene::boom() {
     m_game.m_score -= 10;
 }
 
+void GameScene::refreshTimer(int newTime)
+{
+    m_timerTime.stop();
+    m_timeLeft = newTime;
+    m_timerText->setPlainText(QString::number(m_timeLeft)+"s");
+    m_timerTime.start(1000);
+}
