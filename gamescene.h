@@ -8,6 +8,8 @@
 #include <qpushbutton.h>
 
 #include "game.h"
+#include "database.h"
+
 class GameScene : public QGraphicsScene
 {
     Q_OBJECT
@@ -24,14 +26,20 @@ signals:
 private slots:
     void loop();
     void updateTimer();
+
 private:
 
     QWidget *m_menuWindow;
+    Database db;  // 声明数据库对象
 
-
+    int m_suggestCount;
     int m_timeLeft; // 倒计时剩余时间（秒）
     QTimer m_timerTime; // 倒计时计时器
     QGraphicsTextItem *m_timerText; // 倒计时文本显示
+    QGraphicsTextItem *m_scoreText;
+    bool ifstart = false;
+
+    std::string shuying;
 
     void loadPixmap();
     void init();
@@ -44,7 +52,7 @@ private:
     void updateGrid();
     void removePixmapItems();
     void drawScore();
-    void renderScene();
+    void resetGrid();
     void boom();
     bool suggestSwap();
     bool checkMatchAfterSwap(int x1, int y1, int x2, int y2);
@@ -54,8 +62,6 @@ private:
     QPixmap m_BgPixmap;
     QPixmap m_GemsPixmap;
     QPixmap m_framePixmap;
-    QPixmap m_scorePixmap;
-    QPixmap m_numbersPixmap;
 
     int m_x0, m_y0, m_x, m_y;
     int m_click;
@@ -64,13 +70,14 @@ private:
     QGraphicsPixmapItem m_pixmapItems[10][10];
     QGraphicsPixmapItem unityPartScoreItem, decimalPartScoreItem, hundredthPartScoreItem;
 
-    // QGraphicsScene interface
+
     QElapsedTimer m_elapsedTimer;
     QTimer m_timer;
     float m_deltaTime;
     float m_animationTime;
     const float m_animationSpeed;
     QGraphicsPixmapItem m_button1, m_button2;
+
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void keyPressEvent(QKeyEvent *event) override;

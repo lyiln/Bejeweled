@@ -7,18 +7,17 @@ const QString Game::PATH_TO_BG_PIXMAP = ":/images/background.png";
 const QString Game::PATH_TO_GEMS_PIXMAP = ":/images/gems.png";
 const float Game::ITERATION_VALUE = 1000.0f/60.0f;
 const QString Game::PATH_TO_FRAME_PIXMAP = ":/images/frame.png";
-const QString Game::PATH_TO_SCORE_PIXMAP = ":/images/score.png";
 const QString Game::PATH_TO_CURSOR_PIXMAP = ":/images/cursor.png";
-const QString Game::PATH_TO_NUMBERS_PIXMAP = ":/images/numbers.png";
 
 Game::Game()
     : m_score(0)
 {
-    initGrid();
+    initGrid();//随机生成方块
 }
 
 void Game::swap(Piece p1,Piece p2)
 {
+    //交换坐标信息
   std::swap(p1.col,p2.col);
   std::swap(p1.row,p2.row);
 

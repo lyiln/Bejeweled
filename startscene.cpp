@@ -1,4 +1,5 @@
 #include "startscene.h"
+#include "high_score.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSpacerItem>
@@ -6,17 +7,16 @@
 #include <QtSql>
 #include <QMessageBox>
 #include <QDebug>
-#include <QPalette>  // 添加 QPalette 头文件
-#include <QPixmap>   // 添加 QPixmap 头文件
+#include <QPalette>
+#include <QPixmap>
 
-startscene::startscene(QWidget* parent):QWidget(parent) {
-    createDatabase();  // 创建数据库并连接
-    connectToDatabase();
+startscene::startscene(QWidget* parent) : QWidget(parent) {
+    db.connectToDatabase();  // 连接数据库
 
     setFixedSize(740, 480);
 
     // 设置背景图片
-    QString backgroundImagePath = ":/images/loginBackground.png";  // 替换为你的背景图片路径
+    QString backgroundImagePath = ":/images/loginBackground.png";
     setBackgroundImage(backgroundImagePath);
 
     // 创建用户和密码图片标签
@@ -24,12 +24,12 @@ startscene::startscene(QWidget* parent):QWidget(parent) {
     passwordIconLabel = new QLabel(this);
 
     // 加载图片并设置到标签
-    QPixmap userPixmap(":/images/account.png"); // 替换为实际的用户图片路径
-    QPixmap passwordPixmap(":/images/password.png"); // 替换为实际的密码图片路径
+    QPixmap userPixmap(":/images/account.png");
+    QPixmap passwordPixmap(":/images/password.png");
     userIconLabel->setPixmap(userPixmap);
     passwordIconLabel->setPixmap(passwordPixmap);
 
-    // 设置图片标签为透明背景，这样不会遮挡背景图片
+    // 设置图片标签为透明背景
     userIconLabel->setAttribute(Qt::WA_TranslucentBackground);
     passwordIconLabel->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -39,7 +39,7 @@ startscene::startscene(QWidget* parent):QWidget(parent) {
     passwordLineEdit->setEchoMode(QLineEdit::Password);
 
     // 设置输入框宽度
-    int textBoxWidth = 300; // 设置文本框宽度
+    int textBoxWidth = 300;
     usernameLineEdit->setFixedWidth(textBoxWidth);
     passwordLineEdit->setFixedWidth(textBoxWidth);
 
@@ -53,26 +53,19 @@ startscene::startscene(QWidget* parent):QWidget(parent) {
 
     // 创建布局
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    int iconLeftMargin = 100;
+    int iconTopMargin = 220;
 
-    // 设置图片标签的位置（您需要根据实际布局调整这些值）
-    int iconLeftMargin = 100; // 从左边框的偏移量
-    int iconTopMargin = 220; // 从顶边框的偏移量
-
-
-    // 设置用户图片标签的位置
     userIconLabel->move(iconLeftMargin, 100);
+    passwordIconLabel->move(iconLeftMargin, 220);
 
-    // 设置密码图片标签的位置
-    passwordIconLabel->move(iconLeftMargin,220);
-
-    // 显示图片标签
     userIconLabel->show();
     passwordIconLabel->show();
 
     // 创建水平间距，使输入框和按钮居中
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-    // 添加输入框到主布局，并居中
+    // 添加输入框到主布局
     QHBoxLayout *usernameLayout = new QHBoxLayout();
     usernameLayout->addItem(horizontalSpacer);
     usernameLayout->addWidget(usernameLineEdit);
@@ -85,7 +78,7 @@ startscene::startscene(QWidget* parent):QWidget(parent) {
     passwordLayout->addItem(horizontalSpacer);
     mainLayout->addLayout(passwordLayout);
 
-    // 创建按钮布局，并使按钮居中
+    // 创建按钮布局
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addItem(horizontalSpacer);
     buttonLayout->addWidget(loginButton);
@@ -97,27 +90,25 @@ startscene::startscene(QWidget* parent):QWidget(parent) {
     // 连接信号和槽
     connect(loginButton, &QPushButton::clicked, this, &startscene::login);
     connect(registerButton, &QPushButton::clicked, this, &startscene::registerAcc);
+    //界面创建完毕
 }
 
 // 登录逻辑
 void startscene::login() {
-    // 获取输入框内容
     QString username = usernameLineEdit->text();
     QString password = passwordLineEdit->text();
 
-    // 登录
+    userAccName = username;
+
     QSqlQuery query;
     query.prepare("SELECT * FROM users WHERE username = ? AND password = ?");
     query.addBindValue(username);
     query.addBindValue(password);
 
     if (query.exec() && query.next()) {
-        // 登录成功
         QMessageBox::information(this, "登录成功", "欢迎 " + username);
-
-        // 发出信号，通知主程序跳转到 MenuWindow
         emit showMenuWindow();
-        this->close();  // 关闭当前窗口
+        this->close();
     } else {
         QMessageBox::warning(this, "登录失败", "用户名或密码错误！");
     }
@@ -125,26 +116,21 @@ void startscene::login() {
 
 // 注册逻辑
 void startscene::registerAcc() {
-    // 获取输入框内容
     QString username = usernameLineEdit->text();
     QString password = passwordLineEdit->text();
 
-    // 注册
     if (username.isEmpty() || password.isEmpty()) {
         QMessageBox::warning(this, "输入错误", "用户名和密码不能为空！");
         return;
     }
 
-    // 检查用户名是否已存在
     QSqlQuery query;
     query.prepare("SELECT id FROM users WHERE username = ?");
     query.addBindValue(username);
 
     if (query.exec() && query.next()) {
-        // 用户名已存在，注册失败
         QMessageBox::critical(this, "注册失败", "用户名已存在，注册失败！");
     } else {
-        // 用户名不存在
         query.prepare("INSERT INTO users (username, password, score) VALUES (?, ?, ?)");
         query.addBindValue(username);
         query.addBindValue(password);
@@ -158,67 +144,6 @@ void startscene::registerAcc() {
     }
 }
 
-// 创建数据库
-void startscene::createDatabase() {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("player_data.db");
-
-    if (!db.open()) {
-        qDebug() << "Error: failed to connect to database!";
-    }
-
-    // 创建表（如果不存在）
-    QSqlQuery query;
-    bool success = query.exec("CREATE TABLE IF NOT EXISTS users ("
-                              "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                              "username TEXT UNIQUE NOT NULL, "
-                              "password TEXT NOT NULL, "
-                              "score INTEGER)");
-    if (success) {
-        qDebug() << "Database and table created successfully!";
-    } else {
-        qDebug() << "Error: failed to create table!";
-    }
-}
-
-// 数据库连接
-void startscene::connectToDatabase() {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("player_data.db");  // 使用当前目录中的 player_data.db
-
-    if (!db.open()) {
-        QMessageBox::critical(this, "Error", "Failed to open database.");
-    }
-}
-
-int startscene::getScore(const QString &name){
-    QSqlQuery query;
-    query.prepare("SELECT score FROM users WHERE username = ?");
-    query.addBindValue(name);
-
-    if (query.exec() && query.next()) {
-        return query.value(0).toInt(); // 返回分数
-    } else {
-        qDebug() << "Error: Unable to fetch score for user " << name;
-        return -1;  // 如果出错返回 -1
-    }
-}
-
-// 注意这里没有比较数据库与输入分数大小，自行比对
-void startscene::updateScore(const QString &name, int score){
-    // 更新用户的分数
-    QSqlQuery query;
-    query.prepare("UPDATE users SET score = ? WHERE username = ?");
-    query.addBindValue(score);
-    query.addBindValue(name);
-
-    if (query.exec()) {
-        qDebug() << "update success: " << name;
-    } else {
-        qDebug() << "Error: update failed" << name;
-    }
-}
-
 // 设置背景图片
 void startscene::setBackgroundImage(const QString &imagePath) {
     QPixmap backgroundImage(imagePath);
@@ -227,16 +152,11 @@ void startscene::setBackgroundImage(const QString &imagePath) {
         return;
     }
 
-    // 调整图片大小以适应窗口
     backgroundImage = backgroundImage.scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-
-    // 设置背景图片
     QPalette palette;
     palette.setBrush(QPalette::Window, backgroundImage);
     this->setPalette(palette);
 }
-
-
 
 
 

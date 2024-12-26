@@ -5,9 +5,9 @@
 View::View()
     : QGraphicsView(), m_gameScene(new GameScene(this))
 {
-    setScene(m_gameScene);
+    setScene(m_gameScene);//创建场景，使用scene
     resize(m_gameScene->sceneRect().width() + 2, m_gameScene->sceneRect().height() + 2);
-    setCursor(QCursor(QPixmap(":/images/cursor.png")));
+    setCursor(QCursor(QPixmap(":/images/cursor.png")));//光标
 }
 
 void View::keyPressEvent(QKeyEvent *event)

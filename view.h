@@ -11,11 +11,6 @@ public:
     explicit View();
     GameScene *m_gameScene;
 
-signals:
-private:
-
-
-    // QWidget interface
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;
 };
